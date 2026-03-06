@@ -33,6 +33,17 @@ namespace DapperTest
             }
         }
 
+        public static void Delete(Player player)
+        {
+            var conn = ConnectionString;
+            using (var connection = new SqlConnection(conn))
+            {
+                var rowAffected = connection.Execute(@"DELETE FROM Players WHERE Id=@PId",
+                    new { PId = player.Id });
+                if (rowAffected > 0) Console.WriteLine("Player updated succesfully");
+            }
+        }
+
         public static void Insert(Player player)
         {
             var conn = ConnectionString;
