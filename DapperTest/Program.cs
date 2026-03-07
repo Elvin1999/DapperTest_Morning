@@ -2,6 +2,7 @@
 using DapperTest.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Protocols;
+using System.Data;
 
 namespace DapperTest
 {
@@ -17,8 +18,24 @@ namespace DapperTest
             using (var connection = new SqlConnection(conn))
             {
                 var data = connection.Query<Player>("SELECT * FROM Players");
+                
                 players = data.ToList();
                 return players;
+            }
+        }
+
+        public static void GetPlayersReader()
+        {
+            var conn = ConnectionString;
+
+            using (var connection = new SqlConnection(conn))
+            {
+                var data = connection.ExecuteReader("SELECT * FROM Players");
+                while (data.Read())
+                {
+                    Console.WriteLine(data[1]);
+                }
+               
             }
         }
 
@@ -83,19 +100,31 @@ namespace DapperTest
             };
         }
 
+        public static List<Player> CallSp(float score)
+        {
+            using (var connection=new SqlConnection(ConnectionString))
+            {
+                var result = connection.Query<Player>("sp_ShowGreaterThan",
+                    new { PScore = score },
+                    commandType: CommandType.StoredProcedure);
+                return result.ToList();
+            }
+        }
+
         static void Main(string[] args)
         {
-            var player = GetPlayerById(4);
-            if (player != null)
-            {
-                player.Name = "John Johnlu";
-                player.Score = 67;
-                player.IsStar = false;
+            //var player = GetPlayerById(4);
+            //if (player != null)
+            //{
+            //    player.Name = "John Johnlu";
+            //    player.Score = 67;
+            //    player.IsStar = false;
 
-                Update(player);
-            }
+            //    Update(player);
+            //}
 
-            var players = GetPlayers();
+            //var players = GetPlayers();
+            var players = CallSp(95);
             foreach (var p in players)
             {
                 Console.WriteLine($"ID : {p.Id}");

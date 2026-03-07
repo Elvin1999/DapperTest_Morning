@@ -18,3 +18,10 @@ VALUES('Lebron James',99,1),
 ('Maykl Jordan',94,1)
 
 SELECT * FROM Players
+
+CREATE PROCEDURE sp_ShowGreaterThan
+(@pScore AS FLOAT)
+AS
+SELECT *
+FROM Players
+WHERE Score > @pScore
